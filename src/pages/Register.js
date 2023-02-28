@@ -1,16 +1,15 @@
 import { Fragment } from "react";
+import FromRegist from "../components/FormRegist";
 import Navbar from "../components/Navbar";
 
-const Home = () => {
+const Register = () => {
 
-    return(
+    return (
         <Fragment>
             <Navbar />
-            <div className="container">
-                <h1>Homepage</h1>
-            </div>
+            <FromRegist />
         </Fragment>
     )
 }
 
-export default Home;
+export default Register; 

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import {userRegister} from '../config/AuthUsers';
 
 const FromRegist = () => {
 
@@ -19,14 +20,18 @@ const FromRegist = () => {
         username: '',
         firstname: '',
         lastname: '',
-        password: '',
+        password: '', 
         confirmPassword: '',
         lastEducation: '',
         age: ''
     };
 
+    const handleRegisterButton = (values) => {
+        userRegister(values.email, values.password);
+    }
+
     let lastEducationValidation = Yup.string().required("Last education is required");
-    let ageValidation = Yup.number().required("Age is required");
+    let ageValidation = Yup.number().required("Age is required").positive();
 
     const LoginSchema = Yup.object().shape({
         email: Yup.string()
@@ -40,7 +45,7 @@ const FromRegist = () => {
         lastname: Yup.string()
             .required("Firstname is required"),
         password: Yup.string()
-            .min(4, "Password must be 4 characters at minimum")
+            .min(6, "Password must be 4 characters at minimum")
             .required("Password is required"),
         confirmPassword: Yup.string()
             .oneOf([Yup.ref('password'), null], "Password is not match")
@@ -55,13 +60,10 @@ const FromRegist = () => {
             <Formik
               initialValues={initValues}
               validationSchema={LoginSchema}
-              onSubmit={(values) => {
-                console.log(values);
-                alert("Form is validated! Submitting the form...");
-              }}
+              onSubmit={(values) => handleRegisterButton(values)}
             >
               {({ touched, errors, isSubmitting, values }) =>
-                !isSubmitting ? (
+                (
                   <div>
                     <div className="row mb-5">
                       <div className="col-lg-12 text-center">
@@ -85,7 +87,7 @@ const FromRegist = () => {
                                     component="div"
                                     name="email"
                                     className="invalid-feedback"
-                                />
+                                /> 
                             </div>
 
                             <div className="form-group col-md-6">
@@ -252,24 +254,6 @@ const FromRegist = () => {
                             Submit
                         </button>
                     </Form>
-                  </div>
-                ) : (
-                  <div>
-                    <h1 className="p-3 mt-5">Form Submitted</h1>
-                    <div className="alert alert-success mt-3">
-                        Here's your detail
-                    </div>
-                    <ul className="list-group">
-                      <li className="list-group-item">Email: {values.email}</li>
-                      <li className="list-group-item">Username: {values.username}</li>
-                      <li className="list-group-item">Name: {values.firstname + ' ' + values.lastname}</li>
-                      <li className="list-group-item">Password: {values.password}</li>
-                      {inputRole === 'teacher' ?
-                        <li className="list-group-item">Your Education: {values.lastEducation}</li>
-                        :
-                        <li className="list-group-item">Your Age: {values.age}</li>
-                      }
-                    </ul>
                   </div>
                 )
               }
